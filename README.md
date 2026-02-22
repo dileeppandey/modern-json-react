@@ -8,19 +8,19 @@ A production-grade, fully-featured JSON editor React component. Combines code ed
 
 Syntax-highlighted editor with line numbers, bracket matching, and real-time validation:
 
-![Code Mode - Light Theme](docs/screenshots/code-mode-light.svg)
+![Code Mode - Light Theme](docs/screenshots/code-mode-light.png)
 
 ### Tree Mode (Light)
 
 Collapsible tree view with inline editing, type badges, and hover actions:
 
-![Tree Mode - Light Theme](docs/screenshots/tree-mode-light.svg)
+![Tree Mode - Light Theme](docs/screenshots/tree-mode-light.png)
 
 ### Code Mode (Dark)
 
 Full dark theme support with VS Code-inspired color palette:
 
-![Code Mode - Dark Theme](docs/screenshots/code-mode-dark.svg)
+![Code Mode - Dark Theme](docs/screenshots/code-mode-dark.png)
 
 ## Features
 
