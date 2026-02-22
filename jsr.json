@@ -1,0 +1,6 @@
+{
+    "name": "@dileep/modern-json-react",
+    "version": "1.0.1",
+    "license": "MIT",
+    "exports": "./mod.ts"
+  }
