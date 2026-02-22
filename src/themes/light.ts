@@ -1,0 +1,26 @@
+import type { ThemeConfig } from './types';
+
+export const lightTheme: ThemeConfig = {
+  name: 'light',
+  bg: '#ffffff',
+  fg: '#1e1e1e',
+  border: '#e0e0e0',
+  gutterBg: '#f5f5f5',
+  gutterFg: '#999999',
+  selection: '#add6ff',
+  cursor: '#000000',
+  keyColor: '#0451a5',
+  stringColor: '#0a7e07',
+  numberColor: '#098658',
+  booleanColor: '#7a3e9d',
+  nullColor: '#808080',
+  bracketColor: '#333333',
+  bracketMatchBg: '#bad0f847',
+  errorColor: '#e51400',
+  warningColor: '#bf8803',
+  successColor: '#16825d',
+  treeLine: '#d0d0d0',
+  treeHover: '#f0f4ff',
+  treeSelected: '#e0ecff',
+  typeBadgeBg: '#eef2f7',
+};

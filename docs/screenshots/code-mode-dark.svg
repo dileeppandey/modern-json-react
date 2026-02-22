@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap');
+      .font-ui { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+      .font-mono { font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; }
+    </style>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" rx="12" fill="#1e1e1e" filter="url(#shadow)" stroke="#3c3c3c" stroke-width="1"/>
+
+  <!-- Toolbar -->
+  <rect x="0" y="0" width="900" height="42" rx="12" fill="#1e1e1e"/>
+  <rect x="0" y="30" width="900" height="12" fill="#1e1e1e"/>
+  <line x1="0" y1="42" x2="900" y2="42" stroke="#3c3c3c" stroke-width="1"/>
+
+  <!-- Mode buttons -->
+  <rect x="12" y="8" width="64" height="26" rx="6" fill="#4da6ff"/>
+  <text x="44" y="25" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="500" class="font-ui">Code</text>
+
+  <rect x="80" y="8" width="58" height="26" rx="6" fill="transparent" stroke="#3c3c3c" stroke-width="1"/>
+  <text x="109" y="25" text-anchor="middle" fill="#999" font-size="12" font-weight="500" class="font-ui">Tree</text>
+
+  <rect x="142" y="8" width="56" height="26" rx="6" fill="transparent" stroke="#3c3c3c" stroke-width="1"/>
+  <text x="170" y="25" text-anchor="middle" fill="#999" font-size="12" font-weight="500" class="font-ui">Split</text>
+
+  <line x1="212" y1="10" x2="212" y2="32" stroke="#3c3c3c" stroke-width="1"/>
+
+  <rect x="224" y="9" width="180" height="24" rx="4" fill="#252526" stroke="#3c3c3c" stroke-width="1"/>
+  <text x="236" y="25" fill="#666" font-size="12" class="font-ui">Search...</text>
+
+  <text x="746" y="26" fill="#858585" font-size="16" class="font-ui">↶</text>
+  <text x="776" y="26" fill="#858585" font-size="16" class="font-ui">↷</text>
+  <rect x="806" y="9" width="36" height="24" rx="4" fill="transparent" stroke="#3c3c3c" stroke-width="1"/>
+  <text x="824" y="25" text-anchor="middle" fill="#858585" font-size="11" font-weight="500" class="font-mono">{ }</text>
+  <rect x="848" y="9" width="40" height="24" rx="4" fill="transparent" stroke="#3c3c3c" stroke-width="1"/>
+  <text x="868" y="25" text-anchor="middle" fill="#858585" font-size="11" font-weight="500" class="font-ui">A→Z</text>
+
+  <!-- Line number gutter -->
+  <rect x="0" y="42" width="48" height="448" fill="#252526"/>
+  <line x1="48" y1="42" x2="48" y2="490" stroke="#3c3c3c" stroke-width="1"/>
+
+  <!-- Line numbers -->
+  <text x="38" y="66" text-anchor="end" fill="#858585" font-size="13" class="font-mono">1</text>
+  <text x="38" y="87" text-anchor="end" fill="#858585" font-size="13" class="font-mono">2</text>
+  <text x="38" y="108" text-anchor="end" fill="#858585" font-size="13" class="font-mono">3</text>
+  <text x="38" y="129" text-anchor="end" fill="#858585" font-size="13" class="font-mono">4</text>
+  <text x="38" y="150" text-anchor="end" fill="#858585" font-size="13" class="font-mono">5</text>
+  <text x="38" y="171" text-anchor="end" fill="#858585" font-size="13" class="font-mono">6</text>
+  <text x="38" y="192" text-anchor="end" fill="#858585" font-size="13" class="font-mono">7</text>
+  <text x="38" y="213" text-anchor="end" fill="#858585" font-size="13" class="font-mono">8</text>
+  <text x="38" y="234" text-anchor="end" fill="#858585" font-size="13" class="font-mono">9</text>
+  <text x="38" y="255" text-anchor="end" fill="#858585" font-size="13" class="font-mono">10</text>
+  <text x="38" y="276" text-anchor="end" fill="#858585" font-size="13" class="font-mono">11</text>
+  <text x="38" y="297" text-anchor="end" fill="#858585" font-size="13" class="font-mono">12</text>
+  <text x="38" y="318" text-anchor="end" fill="#858585" font-size="13" class="font-mono">13</text>
+  <text x="38" y="339" text-anchor="end" fill="#858585" font-size="13" class="font-mono">14</text>
+  <text x="38" y="360" text-anchor="end" fill="#858585" font-size="13" class="font-mono">15</text>
+  <text x="38" y="381" text-anchor="end" fill="#858585" font-size="13" class="font-mono">16</text>
+  <text x="38" y="402" text-anchor="end" fill="#858585" font-size="13" class="font-mono">17</text>
+  <text x="38" y="423" text-anchor="end" fill="#858585" font-size="13" class="font-mono">18</text>
+  <text x="38" y="444" text-anchor="end" fill="#858585" font-size="13" class="font-mono">19</text>
+  <text x="38" y="465" text-anchor="end" fill="#858585" font-size="13" class="font-mono">20</text>
+
+  <!-- Code content (dark theme colors) -->
+  <text x="60" y="66" font-size="13" class="font-mono"><tspan fill="#cccccc" font-weight="600">{</tspan></text>
+
+  <text x="60" y="87" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#9cdcfe">"name"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#ce9178">"modern-json-react"</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="108" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#9cdcfe">"version"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#ce9178">"1.0.0"</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="129" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#9cdcfe">"description"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#ce9178">"A production-grade JSON editor"</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="150" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#9cdcfe">"author"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#cccccc" font-weight="600">{</tspan></text>
+
+  <text x="60" y="171" font-size="13" class="font-mono"><tspan fill="#d4d4d4">    </tspan><tspan fill="#9cdcfe">"name"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#ce9178">"Developer"</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="192" font-size="13" class="font-mono"><tspan fill="#d4d4d4">    </tspan><tspan fill="#9cdcfe">"email"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#ce9178">"dev@example.com"</tspan></text>
+
+  <text x="60" y="213" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#cccccc" font-weight="600">}</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="234" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#9cdcfe">"features"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#cccccc" font-weight="600">[</tspan></text>
+
+  <text x="60" y="255" font-size="13" class="font-mono"><tspan fill="#d4d4d4">    </tspan><tspan fill="#ce9178">"Syntax highlighting"</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="276" font-size="13" class="font-mono"><tspan fill="#d4d4d4">    </tspan><tspan fill="#ce9178">"Tree view editing"</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="297" font-size="13" class="font-mono"><tspan fill="#d4d4d4">    </tspan><tspan fill="#ce9178">"JSON Schema validation"</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="318" font-size="13" class="font-mono"><tspan fill="#d4d4d4">    </tspan><tspan fill="#ce9178">"Undo/Redo"</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="339" font-size="13" class="font-mono"><tspan fill="#d4d4d4">    </tspan><tspan fill="#ce9178">"Search &amp; filter"</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="360" font-size="13" class="font-mono"><tspan fill="#d4d4d4">    </tspan><tspan fill="#ce9178">"Dark mode"</tspan></text>
+
+  <text x="60" y="381" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#cccccc" font-weight="600">]</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="402" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#9cdcfe">"isPublished"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#569cd6">true</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="423" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#9cdcfe">"stats"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#cccccc" font-weight="600">{</tspan><tspan fill="#d4d4d4"> </tspan><tspan fill="#9cdcfe">"downloads"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#b5cea8">15432</tspan><tspan fill="#d4d4d4">, </tspan><tspan fill="#9cdcfe">"stars"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#b5cea8">892</tspan><tspan fill="#d4d4d4"> </tspan><tspan fill="#cccccc" font-weight="600">}</tspan><tspan fill="#d4d4d4">,</tspan></text>
+
+  <text x="60" y="444" font-size="13" class="font-mono"><tspan fill="#d4d4d4">  </tspan><tspan fill="#9cdcfe">"license"</tspan><tspan fill="#d4d4d4">: </tspan><tspan fill="#ce9178">"MIT"</tspan></text>
+
+  <text x="60" y="465" font-size="13" class="font-mono"><tspan fill="#cccccc" font-weight="600">}</tspan></text>
+
+  <!-- Status bar -->
+  <rect x="0" y="488" width="900" height="32" rx="0" fill="#1e1e1e"/>
+  <rect x="0" y="508" width="900" height="12" rx="12" fill="#1e1e1e"/>
+  <line x1="0" y1="488" x2="900" y2="488" stroke="#3c3c3c" stroke-width="1"/>
+
+  <text x="16" y="509" font-size="12" class="font-ui"><tspan fill="#89d185" font-weight="600">✓</tspan><tspan fill="#858585">  Valid JSON</tspan></text>
+  <text x="130" y="509" fill="#3c3c3c" font-size="12" class="font-ui">|</text>
+  <text x="146" y="509" fill="#858585" font-size="12" class="font-ui">Ln 1, Col 1</text>
+  <text x="240" y="509" fill="#3c3c3c" font-size="12" class="font-ui">|</text>
+  <text x="256" y="509" fill="#858585" font-size="12" class="font-ui">10 properties, 1 array</text>
+  <text x="418" y="509" fill="#3c3c3c" font-size="12" class="font-ui">|</text>
+  <text x="434" y="509" fill="#858585" font-size="12" class="font-ui">486 B</text>
+</svg>

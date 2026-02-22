@@ -1,0 +1,26 @@
+import type { ThemeConfig } from './types';
+
+export const darkTheme: ThemeConfig = {
+  name: 'dark',
+  bg: '#1e1e1e',
+  fg: '#d4d4d4',
+  border: '#3c3c3c',
+  gutterBg: '#252526',
+  gutterFg: '#858585',
+  selection: '#264f78',
+  cursor: '#ffffff',
+  keyColor: '#9cdcfe',
+  stringColor: '#ce9178',
+  numberColor: '#b5cea8',
+  booleanColor: '#569cd6',
+  nullColor: '#808080',
+  bracketColor: '#cccccc',
+  bracketMatchBg: '#0064001a',
+  errorColor: '#f14c4c',
+  warningColor: '#cca700',
+  successColor: '#89d185',
+  treeLine: '#4a4a4a',
+  treeHover: '#2a2d2e',
+  treeSelected: '#094771',
+  typeBadgeBg: '#2d2d30',
+};

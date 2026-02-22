@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap');
+      .font-ui { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+      .font-mono { font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; }
+    </style>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" rx="12" fill="#ffffff" filter="url(#shadow)" stroke="#e0e0e0" stroke-width="1"/>
+
+  <!-- Toolbar -->
+  <rect x="0" y="0" width="900" height="42" rx="12" fill="#ffffff"/>
+  <rect x="0" y="30" width="900" height="12" fill="#ffffff"/>
+  <line x1="0" y1="42" x2="900" y2="42" stroke="#e0e0e0" stroke-width="1"/>
+
+  <!-- Mode buttons -->
+  <rect x="12" y="8" width="64" height="26" rx="6" fill="transparent" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="44" y="25" text-anchor="middle" fill="#666" font-size="12" font-weight="500" class="font-ui">Code</text>
+
+  <rect x="80" y="8" width="58" height="26" rx="6" fill="#0066cc"/>
+  <text x="109" y="25" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="500" class="font-ui">Tree</text>
+
+  <rect x="142" y="8" width="56" height="26" rx="6" fill="transparent" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="170" y="25" text-anchor="middle" fill="#666" font-size="12" font-weight="500" class="font-ui">Split</text>
+
+  <line x1="212" y1="10" x2="212" y2="32" stroke="#e0e0e0" stroke-width="1"/>
+  <rect x="224" y="9" width="180" height="24" rx="4" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="236" y="25" fill="#999" font-size="12" class="font-ui">Search...</text>
+
+  <!-- Tree content area -->
+  <!-- Root node -->
+  <text x="24" y="72" fill="#666" font-size="11" class="font-mono">▼</text>
+  <text x="42" y="72" fill="#0451a5" font-size="13" font-weight="500" class="font-mono">"root"</text>
+  <text x="90" y="72" fill="#666" font-size="13" class="font-mono">:</text>
+  <rect x="100" y="59" width="32" height="18" rx="3" fill="#eef2f7"/>
+  <text x="116" y="72" text-anchor="middle" fill="#666" font-size="10" class="font-mono">obj</text>
+  <text x="142" y="72" fill="#999" font-size="11" class="font-ui">(10 properties)</text>
+
+  <!-- Tree connector line -->
+  <line x1="32" y1="80" x2="32" y2="435" stroke="#d0d0d0" stroke-width="1"/>
+
+  <!-- name -->
+  <text x="46" y="100" fill="#999" font-size="11" class="font-mono"> </text>
+  <text x="56" y="100" fill="#0451a5" font-size="13" font-weight="500" class="font-mono">"name"</text>
+  <text x="110" y="100" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="122" y="100" fill="#0a7e07" font-size="13" class="font-mono">"modern-json-react"</text>
+  <rect x="282" y="87" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="296" y="100" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+
+  <!-- version -->
+  <text x="56" y="128" fill="#0451a5" font-size="13" font-weight="500" class="font-mono">"version"</text>
+  <text x="130" y="128" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="142" y="128" fill="#0a7e07" font-size="13" class="font-mono">"1.0.0"</text>
+  <rect x="198" y="115" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="212" y="128" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+
+  <!-- description -->
+  <text x="56" y="156" fill="#0451a5" font-size="13" font-weight="500" class="font-mono">"description"</text>
+  <text x="162" y="156" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="174" y="156" fill="#0a7e07" font-size="13" class="font-mono">"A production-grade JSON editor"</text>
+  <rect x="440" y="143" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="454" y="156" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+
+  <!-- author (collapsed) -->
+  <text x="42" y="184" fill="#666" font-size="11" class="font-mono">▶</text>
+  <text x="56" y="184" fill="#0451a5" font-size="13" font-weight="500" class="font-mono">"author"</text>
+  <text x="122" y="184" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="134" y="184" fill="#333" font-size="13" font-weight="600" class="font-mono">{</text>
+  <text x="146" y="184" fill="#999" font-size="11" class="font-ui">3 items</text>
+  <text x="194" y="184" fill="#333" font-size="13" font-weight="600" class="font-mono">}</text>
+  <rect x="206" y="171" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="220" y="184" text-anchor="middle" fill="#666" font-size="10" class="font-mono">obj</text>
+
+  <!-- features (expanded) -->
+  <text x="42" y="212" fill="#666" font-size="11" class="font-mono">▼</text>
+  <text x="56" y="212" fill="#0451a5" font-size="13" font-weight="500" class="font-mono">"features"</text>
+  <text x="140" y="212" fill="#666" font-size="13" class="font-mono">:</text>
+  <rect x="152" y="199" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="166" y="212" text-anchor="middle" fill="#666" font-size="10" class="font-mono">arr</text>
+  <text x="190" y="212" fill="#999" font-size="11" class="font-ui">(6 items)</text>
+
+  <!-- features children connector -->
+  <line x1="52" y1="220" x2="52" y2="370" stroke="#d0d0d0" stroke-width="1"/>
+
+  <!-- features[0] -->
+  <text x="68" y="240" fill="#098658" font-size="13" class="font-mono">0</text>
+  <text x="80" y="240" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="92" y="240" fill="#0a7e07" font-size="13" class="font-mono">"Syntax highlighting"</text>
+  <rect x="260" y="227" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="274" y="240" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+
+  <!-- features[1] -->
+  <text x="68" y="268" fill="#098658" font-size="13" class="font-mono">1</text>
+  <text x="80" y="268" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="92" y="268" fill="#0a7e07" font-size="13" class="font-mono">"Tree view editing"</text>
+  <rect x="248" y="255" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="262" y="268" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+
+  <!-- features[2] - hovered -->
+  <rect x="40" y="280" width="820" height="24" rx="4" fill="#f0f4ff"/>
+  <text x="68" y="296" fill="#098658" font-size="13" class="font-mono">2</text>
+  <text x="80" y="296" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="92" y="296" fill="#0a7e07" font-size="13" class="font-mono">"JSON Schema validation"</text>
+  <rect x="286" y="283" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="300" y="296" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+  <text x="838" y="296" fill="#e51400" font-size="12" class="font-ui">✕</text>
+
+  <!-- features[3] -->
+  <text x="68" y="324" fill="#098658" font-size="13" class="font-mono">3</text>
+  <text x="80" y="324" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="92" y="324" fill="#0a7e07" font-size="13" class="font-mono">"Undo/Redo"</text>
+  <rect x="186" y="311" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="200" y="324" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+
+  <!-- features[4] -->
+  <text x="68" y="352" fill="#098658" font-size="13" class="font-mono">4</text>
+  <text x="80" y="352" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="92" y="352" fill="#0a7e07" font-size="13" class="font-mono">"Search &amp; filter"</text>
+  <rect x="232" y="339" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="246" y="352" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+
+  <!-- features[5] -->
+  <text x="68" y="380" fill="#098658" font-size="13" class="font-mono">5</text>
+  <text x="80" y="380" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="92" y="380" fill="#0a7e07" font-size="13" class="font-mono">"Dark mode"</text>
+  <rect x="186" y="367" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="200" y="380" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+
+  <!-- isPublished -->
+  <text x="56" y="410" fill="#0451a5" font-size="13" font-weight="500" class="font-mono">"isPublished"</text>
+  <text x="166" y="410" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="178" y="410" fill="#7a3e9d" font-size="13" class="font-mono">true</text>
+  <rect x="212" y="397" width="32" height="18" rx="3" fill="#eef2f7"/>
+  <text x="228" y="410" text-anchor="middle" fill="#666" font-size="10" class="font-mono">bool</text>
+
+  <!-- license -->
+  <text x="56" y="438" fill="#0451a5" font-size="13" font-weight="500" class="font-mono">"license"</text>
+  <text x="128" y="438" fill="#666" font-size="13" class="font-mono">:</text>
+  <text x="140" y="438" fill="#0a7e07" font-size="13" class="font-mono">"MIT"</text>
+  <rect x="182" y="425" width="28" height="18" rx="3" fill="#eef2f7"/>
+  <text x="196" y="438" text-anchor="middle" fill="#666" font-size="10" class="font-mono">str</text>
+
+  <!-- Add property button -->
+  <rect x="40" y="454" width="110" height="24" rx="4" fill="transparent" stroke="#d0d0d0" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="95" y="470" text-anchor="middle" fill="#0066cc" font-size="12" class="font-ui">+ Add property</text>
+
+  <!-- Status bar -->
+  <rect x="0" y="488" width="900" height="32" rx="0" fill="#ffffff"/>
+  <rect x="0" y="508" width="900" height="12" rx="12" fill="#ffffff"/>
+  <line x1="0" y1="488" x2="900" y2="488" stroke="#e0e0e0" stroke-width="1"/>
+
+  <text x="16" y="509" font-size="12" class="font-ui"><tspan fill="#16825d" font-weight="600">✓</tspan><tspan fill="#666">  Valid JSON</tspan></text>
+  <text x="130" y="509" fill="#e0e0e0" font-size="12" class="font-ui">|</text>
+  <text x="146" y="509" fill="#666" font-size="12" class="font-ui">10 properties, 1 array</text>
+  <text x="318" y="509" fill="#e0e0e0" font-size="12" class="font-ui">|</text>
+  <text x="334" y="509" fill="#666" font-size="12" class="font-ui">486 B</text>
+</svg>
