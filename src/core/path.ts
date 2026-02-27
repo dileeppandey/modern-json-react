@@ -44,7 +44,7 @@ function setBySegments(
   current: unknown,
   segments: string[],
   index: number,
-  value: unknown
+  value: unknown,
 ): unknown {
   if (index === segments.length) return value;
 
@@ -64,7 +64,7 @@ function setBySegments(
         (current as Record<string, unknown>)[segment],
         segments,
         index + 1,
-        value
+        value,
       ),
     };
   }
@@ -99,7 +99,8 @@ function deleteBySegments(current: unknown, segments: string[], index: number): 
     }
 
     if (typeof current === 'object' && current !== null) {
-      const { [segment]: _, ...rest } = current as Record<string, unknown>;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [segment]: _omit, ...rest } = current as Record<string, unknown>;
       return rest;
     }
 
@@ -121,7 +122,7 @@ function deleteBySegments(current: unknown, segments: string[], index: number): 
       [segment]: deleteBySegments(
         (current as Record<string, unknown>)[segment],
         segments,
-        index + 1
+        index + 1,
       ),
     };
   }

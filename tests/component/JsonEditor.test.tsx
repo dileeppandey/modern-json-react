@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import { JsonEditor } from '../../src/JsonEditor';
 
@@ -183,17 +182,12 @@ describe('JsonEditor Component', () => {
         properties: { age: { type: 'number', minimum: 0 } },
       };
 
-      render(
-        <JsonEditor
-          value={{ age: -5 }}
-          schema={schema}
-          onValidate={onValidate}
-        />
-      );
+      render(<JsonEditor value={{ age: -5 }} schema={schema} onValidate={onValidate} />);
 
-      // Wait for debounced validation
-      await new Promise((r) => setTimeout(r, 500));
-      expect(onValidate).toHaveBeenCalled();
+      // Wait for debounced validation using act-safe waitFor
+      await waitFor(() => expect(onValidate).toHaveBeenCalled(), {
+        timeout: 1000,
+      });
     });
   });
 

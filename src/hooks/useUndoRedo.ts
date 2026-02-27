@@ -21,10 +21,7 @@ interface UndoRedoState<T> {
 /**
  * A hook providing undo/redo history management with time-based grouping.
  */
-export function useUndoRedo<T>(
-  initialValue: T,
-  options: UndoRedoOptions = {}
-): UndoRedoState<T> {
+export function useUndoRedo<T>(initialValue: T, options: UndoRedoOptions = {}): UndoRedoState<T> {
   const { maxHistory = 100, groupingInterval = 300 } = options;
 
   // Use refs for the mutable history so we can read/write atomically
@@ -71,7 +68,7 @@ export function useUndoRedo<T>(
       positionRef.current = Math.max(0, newPos);
       rerender();
     },
-    [maxHistory, groupingInterval, rerender]
+    [maxHistory, groupingInterval, rerender],
   );
 
   const undo = useCallback(() => {
@@ -95,7 +92,7 @@ export function useUndoRedo<T>(
       lastUpdateTime.current = 0;
       rerender();
     },
-    [rerender]
+    [rerender],
   );
 
   return {

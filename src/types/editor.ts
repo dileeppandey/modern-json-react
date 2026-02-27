@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import type { ValidationError, JSONSchema, CustomValidator } from './validation';
 import type { ThemeConfig } from '../themes/types';
 

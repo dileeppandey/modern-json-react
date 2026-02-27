@@ -1,16 +1,22 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react';
 import { Toolbar } from './components/Toolbar/Toolbar';
+import { SearchBar } from './components/SearchBar/SearchBar';
 import { CodeEditor } from './components/CodeEditor/CodeEditor';
 import { TreeEditor } from './components/TreeEditor/TreeEditor';
 import { StatusBar } from './components/StatusBar/StatusBar';
 import { useJsonParser } from './hooks/useJsonParser';
 import { useUndoRedo } from './hooks/useUndoRedo';
 import { useSearch } from './hooks/useSearch';
+import { useContainerWidth } from './hooks/useContainerWidth';
 import { computeStats } from './core/formatter';
 import { lightTheme } from './themes/light';
 import { darkTheme } from './themes/dark';
 import type { JsonEditorProps, EditorMode, CursorPosition } from './types/editor';
 import type { ThemeConfig } from './themes/types';
+
+/** Breakpoints based on container width (not viewport) */
+const BREAKPOINT_SM = 480;
+const BREAKPOINT_MD = 768;
 
 /**
  * A production-grade JSON editor React component.
@@ -31,13 +37,13 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   height = 400,
   readOnly = false,
   searchable = true,
-  sortable = true,
+  sortable: _sortable = true,
   indentation = 2,
   lineNumbers = true,
   bracketMatching = true,
-  maxSize,
-  virtualize = 'auto',
-  onError,
+  maxSize: _maxSize,
+  virtualize: _virtualize = 'auto',
+  onError: _onError,
   onFocus,
   onBlur,
   className = '',
@@ -52,7 +58,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
       if (onModeChange) onModeChange(newMode);
       else setInternalMode(newMode);
     },
-    [onModeChange]
+    [onModeChange],
   );
 
   // JSON parser + validation
@@ -77,6 +83,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
         history.reset(text);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalValue]);
 
   // Notify parent of changes
@@ -95,7 +102,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
         }
       }
     },
-    [parser, history, onChange]
+    [parser, history, onChange],
   );
 
   const handleTreeChange = useCallback(
@@ -104,7 +111,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
       const text = JSON.stringify(newValue, null, indent);
       handleTextChange(text);
     },
-    [handleTextChange, indentation]
+    [handleTextChange, indentation],
   );
 
   // Notify parent of validation
@@ -123,7 +130,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   // Stats
   const stats = useMemo(
     () => (parser.parsedValue !== undefined ? computeStats(parser.parsedValue, parser.text) : null),
-    [parser.parsedValue, parser.text]
+    [parser.parsedValue, parser.text],
   );
 
   // Theme resolution
@@ -131,7 +138,10 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     if (typeof theme === 'object') return theme;
     if (theme === 'dark') return darkTheme;
     if (theme === 'auto') {
-      if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
+      if (
+        typeof window !== 'undefined' &&
+        window.matchMedia?.('(prefers-color-scheme: dark)').matches
+      ) {
         return darkTheme;
       }
       return lightTheme;
@@ -204,11 +214,23 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [history, parser, search, searchable]);
 
+  // Responsive container measurement
+  const containerRef = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef);
+
+  const isSmall = containerWidth > 0 && containerWidth <= BREAKPOINT_SM;
+  const isMedium = containerWidth > 0 && containerWidth <= BREAKPOINT_MD;
+
+  // Build responsive class names
+  const sizeClass = isSmall ? 'mjr-editor--sm' : isMedium ? 'mjr-editor--md' : '';
+  const shouldStackSplit = mode === 'split' && isMedium;
+
   const heightStyle = typeof height === 'number' ? `${height}px` : height;
 
   return (
     <div
-      className={`mjr-editor ${className}`}
+      ref={containerRef}
+      className={`mjr-editor ${sizeClass} ${className}`.trim()}
       style={{ ...themeVars, height: heightStyle, ...style } as React.CSSProperties}
       role="application"
       aria-label={ariaLabel}
@@ -234,7 +256,24 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
         readOnly={readOnly}
       />
 
-      <div className="mjr-editor__content">
+      {search.isActive && (
+        <SearchBar
+          query={search.query}
+          onQueryChange={search.setQuery}
+          matches={search.matches}
+          currentMatchIndex={search.currentMatchIndex}
+          totalMatches={search.totalMatches}
+          onNext={search.goToNext}
+          onPrevious={search.goToPrevious}
+          onClose={search.close}
+          options={search.options}
+          onOptionsChange={search.setOptions}
+        />
+      )}
+
+      <div
+        className={`mjr-editor__content ${shouldStackSplit ? 'mjr-editor__content--responsive-stack' : ''}`}
+      >
         {(mode === 'code' || mode === 'split') && (
           <div className={`mjr-editor__panel ${mode === 'split' ? 'mjr-editor__panel--half' : ''}`}>
             <CodeEditor
@@ -242,7 +281,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
               onChange={handleTextChange}
               parseError={parser.parseError}
               readOnly={readOnly}
-              lineNumbers={lineNumbers}
+              lineNumbers={isSmall ? false : lineNumbers}
               bracketMatching={bracketMatching}
               searchMatches={search.matches}
               currentMatchIndex={search.currentMatchIndex}
@@ -257,6 +296,8 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
               value={parser.parsedValue}
               onChange={handleTreeChange}
               readOnly={readOnly}
+              searchQuery={search.isActive ? search.query : ''}
+              searchCaseSensitive={search.options.caseSensitive}
             />
           </div>
         )}

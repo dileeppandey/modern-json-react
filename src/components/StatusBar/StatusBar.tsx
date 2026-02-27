@@ -47,11 +47,15 @@ export const StatusBar: React.FC<StatusBarProps> = ({
       aria-atomic="true"
     >
       <span className="mjr-status-bar__indicator">
-        <span className="mjr-status-bar__icon" aria-hidden="true">{statusIcon}</span>
+        <span className="mjr-status-bar__icon" aria-hidden="true">
+          {statusIcon}
+        </span>
         <span className="mjr-status-bar__text">{statusText}</span>
       </span>
 
-      <span className="mjr-status-bar__separator" aria-hidden="true">|</span>
+      <span className="mjr-status-bar__separator" aria-hidden="true">
+        |
+      </span>
 
       <span className="mjr-status-bar__cursor">
         Ln {cursor.line}, Col {cursor.column}
@@ -59,7 +63,9 @@ export const StatusBar: React.FC<StatusBarProps> = ({
 
       {stats && (
         <>
-          <span className="mjr-status-bar__separator" aria-hidden="true">|</span>
+          <span className="mjr-status-bar__separator" aria-hidden="true">
+            |
+          </span>
           <span className="mjr-status-bar__stats">
             {stats.properties} {stats.properties === 1 ? 'property' : 'properties'}
             {stats.arrays > 0 && `, ${stats.arrays} ${stats.arrays === 1 ? 'array' : 'arrays'}`}
@@ -69,7 +75,9 @@ export const StatusBar: React.FC<StatusBarProps> = ({
 
       {stats && stats.byteSize > 0 && (
         <>
-          <span className="mjr-status-bar__separator" aria-hidden="true">|</span>
+          <span className="mjr-status-bar__separator" aria-hidden="true">
+            |
+          </span>
           <span className="mjr-status-bar__size">{formatBytes(stats.byteSize)}</span>
         </>
       )}

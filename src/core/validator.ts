@@ -14,7 +14,7 @@ import type {
 export function validateSchema(
   value: unknown,
   schema: JSONSchema,
-  path: string = '$'
+  path: string = '$',
 ): ValidationResult {
   const errors: ValidationError[] = [];
 
@@ -30,7 +30,8 @@ export function validateSchema(
     const actualType = getJsonType(value);
     const allowedTypes = Array.isArray(schema.type) ? schema.type : [schema.type];
     // Per JSON Schema spec, "integer" is a subtype of "number"
-    const typeMatches = allowedTypes.includes(actualType) ||
+    const typeMatches =
+      allowedTypes.includes(actualType) ||
       (actualType === 'integer' && allowedTypes.includes('number'));
     if (!typeMatches) {
       errors.push(
@@ -39,8 +40,8 @@ export function validateSchema(
           path,
           'type',
           schema.type,
-          value
-        )
+          value,
+        ),
       );
     }
   }
@@ -54,8 +55,8 @@ export function validateSchema(
           path,
           'enum',
           schema.enum,
-          value
-        )
+          value,
+        ),
       );
     }
   }
@@ -69,8 +70,8 @@ export function validateSchema(
           path,
           'minLength',
           schema.minLength,
-          value
-        )
+          value,
+        ),
       );
     }
     if (schema.maxLength !== undefined && value.length > (schema.maxLength as number)) {
@@ -80,15 +81,21 @@ export function validateSchema(
           path,
           'maxLength',
           schema.maxLength,
-          value
-        )
+          value,
+        ),
       );
     }
     if (schema.pattern) {
       const re = new RegExp(schema.pattern as string);
       if (!re.test(value)) {
         errors.push(
-          makeError(`String must match pattern "${schema.pattern}"`, path, 'pattern', schema.pattern, value)
+          makeError(
+            `String must match pattern "${schema.pattern}"`,
+            path,
+            'pattern',
+            schema.pattern,
+            value,
+          ),
         );
       }
     }
@@ -98,12 +105,12 @@ export function validateSchema(
   if (typeof value === 'number') {
     if (schema.minimum !== undefined && value < (schema.minimum as number)) {
       errors.push(
-        makeError(`Value must be >= ${schema.minimum}`, path, 'minimum', schema.minimum, value)
+        makeError(`Value must be >= ${schema.minimum}`, path, 'minimum', schema.minimum, value),
       );
     }
     if (schema.maximum !== undefined && value > (schema.maximum as number)) {
       errors.push(
-        makeError(`Value must be <= ${schema.maximum}`, path, 'maximum', schema.maximum, value)
+        makeError(`Value must be <= ${schema.maximum}`, path, 'maximum', schema.maximum, value),
       );
     }
     if (schema.exclusiveMinimum !== undefined && value <= (schema.exclusiveMinimum as number)) {
@@ -113,8 +120,8 @@ export function validateSchema(
           path,
           'exclusiveMinimum',
           schema.exclusiveMinimum,
-          value
-        )
+          value,
+        ),
       );
     }
     if (schema.exclusiveMaximum !== undefined && value >= (schema.exclusiveMaximum as number)) {
@@ -124,13 +131,19 @@ export function validateSchema(
           path,
           'exclusiveMaximum',
           schema.exclusiveMaximum,
-          value
-        )
+          value,
+        ),
       );
     }
     if (schema.multipleOf !== undefined && value % (schema.multipleOf as number) !== 0) {
       errors.push(
-        makeError(`Value must be a multiple of ${schema.multipleOf}`, path, 'multipleOf', schema.multipleOf, value)
+        makeError(
+          `Value must be a multiple of ${schema.multipleOf}`,
+          path,
+          'multipleOf',
+          schema.multipleOf,
+          value,
+        ),
       );
     }
   }
@@ -139,15 +152,30 @@ export function validateSchema(
   if (Array.isArray(value)) {
     if (schema.minItems !== undefined && value.length < (schema.minItems as number)) {
       errors.push(
-        makeError(`Array must have at least ${schema.minItems} items`, path, 'minItems', schema.minItems, value)
+        makeError(
+          `Array must have at least ${schema.minItems} items`,
+          path,
+          'minItems',
+          schema.minItems,
+          value,
+        ),
       );
     }
     if (schema.maxItems !== undefined && value.length > (schema.maxItems as number)) {
       errors.push(
-        makeError(`Array must have at most ${schema.maxItems} items`, path, 'maxItems', schema.maxItems, value)
+        makeError(
+          `Array must have at most ${schema.maxItems} items`,
+          path,
+          'maxItems',
+          schema.maxItems,
+          value,
+        ),
       );
     }
-    if (schema.uniqueItems && new Set(value.map((v: unknown) => JSON.stringify(v))).size !== value.length) {
+    if (
+      schema.uniqueItems &&
+      new Set(value.map((v: unknown) => JSON.stringify(v))).size !== value.length
+    ) {
       errors.push(makeError('Array items must be unique', path, 'uniqueItems', true, value));
     }
     // Validate items against item schema
@@ -168,7 +196,7 @@ export function validateSchema(
       for (const req of schema.required as string[]) {
         if (!(req in obj)) {
           errors.push(
-            makeError(`Missing required property "${req}"`, path, 'required', schema.required)
+            makeError(`Missing required property "${req}"`, path, 'required', schema.required),
           );
         }
       }
@@ -181,8 +209,8 @@ export function validateSchema(
           path,
           'minProperties',
           schema.minProperties,
-          value
-        )
+          value,
+        ),
       );
     }
 
@@ -193,8 +221,8 @@ export function validateSchema(
           path,
           'maxProperties',
           schema.maxProperties,
-          value
-        )
+          value,
+        ),
       );
     }
 
@@ -212,7 +240,7 @@ export function validateSchema(
               `${path}.${key}`,
               'additionalProperties',
               false,
-              obj[key]
+              obj[key],
             ),
           );
         }
@@ -229,7 +257,7 @@ export function validateSchema(
 export async function runCustomValidators(
   value: unknown,
   validators: CustomValidator[],
-  path: string = '$'
+  path: string = '$',
 ): Promise<ValidationError[]> {
   const results = await Promise.all(validators.map((v) => v(value, path)));
   return results.flat();
@@ -252,7 +280,7 @@ function makeError(
   schemaKeyword: string,
   schemaRule?: unknown,
   actualValue?: unknown,
-  severity: ValidationSeverity = 'error'
+  severity: ValidationSeverity = 'error',
 ): ValidationError {
   return { message, path, severity, schemaKeyword, schemaRule, actualValue };
 }

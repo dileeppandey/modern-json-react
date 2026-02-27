@@ -102,7 +102,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           aria-label="Format document"
           title="Format (Ctrl+Shift+P)"
         >
-          { '{ }' }
+          {'{ }'}
         </button>
       )}
     </div>

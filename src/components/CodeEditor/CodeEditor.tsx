@@ -32,6 +32,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   className = '',
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const lines = useMemo(() => value.split('\n'), [value]);
 
@@ -40,7 +41,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       if (readOnly) return;
       onChange(e.target.value);
     },
-    [onChange, readOnly]
+    [onChange, readOnly],
   );
 
   const handleKeyDown = useCallback(
@@ -78,8 +79,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         // Only auto-close if no text is selected
         if (start === end) {
           e.preventDefault();
-          const newValue =
-            value.substring(0, start) + e.key + closeChar + value.substring(end);
+          const newValue = value.substring(0, start) + e.key + closeChar + value.substring(end);
           onChange(newValue);
 
           requestAnimationFrame(() => {
@@ -88,8 +88,26 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         }
       }
     },
-    [value, onChange, readOnly]
+    [value, onChange, readOnly],
   );
+
+  // Sync scroll: when the wrapper scrolls (via touch or mouse wheel),
+  // update the textarea's scroll position so the caret stays aligned.
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    const syncScroll = () => {
+      const textarea = textareaRef.current;
+      if (textarea) {
+        textarea.scrollTop = wrapper.scrollTop;
+        textarea.scrollLeft = wrapper.scrollLeft;
+      }
+    };
+
+    wrapper.addEventListener('scroll', syncScroll, { passive: true });
+    return () => wrapper.removeEventListener('scroll', syncScroll);
+  }, []);
 
   const handleCursorMove = useCallback(() => {
     const textarea = textareaRef.current;
@@ -104,32 +122,58 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
     onCursorChange({ line, column, offset: pos });
   }, [value, onCursorChange]);
 
-  // Syntax highlight the JSON text
+  // Build a lookup of matches per line for efficient rendering
+  const matchesByLine = useMemo(() => {
+    const map = new Map<number, { match: SearchMatch; isActive: boolean }[]>();
+    searchMatches.forEach((m, i) => {
+      if (!map.has(m.line)) map.set(m.line, []);
+      map.get(m.line)!.push({ match: m, isActive: i === currentMatchIndex });
+    });
+    return map;
+  }, [searchMatches, currentMatchIndex]);
+
+  // Scroll the current match into view when navigating
+  useEffect(() => {
+    if (searchMatches.length === 0) return;
+    const currentMatch = searchMatches[currentMatchIndex];
+    if (!currentMatch) return;
+
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    // Find the active highlight element
+    const activeEl = wrapper.querySelector('.mjr-code__match--active');
+    if (activeEl) {
+      activeEl.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    }
+  }, [currentMatchIndex, searchMatches]);
+
+  // Syntax highlight the JSON text with search match overlays
   const highlightedLines = useMemo(() => {
     return lines.map((line, idx) => {
       const lineNum = idx + 1;
       const isErrorLine = parseError?.line === lineNum;
+      const lineMatches = matchesByLine.get(lineNum);
 
       return (
-        <div
-          key={idx}
-          className={`mjr-code__line ${isErrorLine ? 'mjr-code__line--error' : ''}`}
-        >
+        <div key={idx} className={`mjr-code__line ${isErrorLine ? 'mjr-code__line--error' : ''}`}>
           {lineNumbers && (
             <span className="mjr-code__line-number" aria-hidden="true">
               {lineNum}
             </span>
           )}
           <span className="mjr-code__line-content">
-            {highlightJsonLine(line)}
+            {lineMatches && lineMatches.length > 0
+              ? highlightLineWithMatches(line, lineMatches)
+              : highlightJsonLine(line)}
           </span>
         </div>
       );
     });
-  }, [lines, lineNumbers, parseError]);
+  }, [lines, lineNumbers, parseError, matchesByLine]);
 
   return (
-    <div className={`mjr-code-editor ${className}`}>
+    <div ref={wrapperRef} className={`mjr-code-editor ${className}`}>
       {/* Highlighted display layer */}
       <div className="mjr-code__display" aria-hidden="true">
         {highlightedLines}
@@ -168,6 +212,53 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
     </div>
   );
 };
+
+/**
+ * Renders a line with search match highlights overlaid on the syntax highlighting.
+ * Splits the line into segments: non-match regions get normal syntax highlighting,
+ * match regions get wrapped in a highlight span.
+ */
+function highlightLineWithMatches(
+  line: string,
+  lineMatches: { match: SearchMatch; isActive: boolean }[],
+): React.ReactNode[] {
+  // Sort matches by column position
+  const sorted = [...lineMatches].sort((a, b) => a.match.columnStart - b.match.columnStart);
+
+  const result: React.ReactNode[] = [];
+  let pos = 0;
+  let key = 0;
+
+  for (const { match, isActive } of sorted) {
+    // Render text before this match with normal syntax highlighting
+    if (match.columnStart > pos) {
+      const before = line.substring(pos, match.columnStart);
+      result.push(<span key={key++}>{highlightJsonLine(before)}</span>);
+    }
+
+    // Render the match with highlight
+    const matchText = line.substring(match.columnStart, match.columnEnd);
+    const cls = isActive ? 'mjr-code__match mjr-code__match--active' : 'mjr-code__match';
+    result.push(
+      <mark
+        key={key++}
+        className={cls}
+        data-testid={isActive ? 'search-match-active' : 'search-match'}
+      >
+        {highlightJsonLine(matchText)}
+      </mark>,
+    );
+
+    pos = match.columnEnd;
+  }
+
+  // Remaining text after last match
+  if (pos < line.length) {
+    result.push(<span key={key++}>{highlightJsonLine(line.substring(pos))}</span>);
+  }
+
+  return result;
+}
 
 /**
  * Simple JSON syntax highlighter — tokenizes a single line.
@@ -216,7 +307,7 @@ function highlightJsonLine(line: string): React.ReactNode[] {
       tokens.push(
         <span key={key++} className={isKey ? 'mjr-syn-key' : 'mjr-syn-string'}>
           {str}
-        </span>
+        </span>,
       );
       continue;
     }
@@ -224,44 +315,66 @@ function highlightJsonLine(line: string): React.ReactNode[] {
     // Numbers
     if (ch === '-' || (ch >= '0' && ch <= '9')) {
       let num = '';
-      while (i < line.length && /[\d.eE+\-]/.test(line[i])) {
+      while (i < line.length && /[\d.eE+-]/.test(line[i])) {
         num += line[i];
         i++;
       }
       tokens.push(
-        <span key={key++} className="mjr-syn-number">{num}</span>
+        <span key={key++} className="mjr-syn-number">
+          {num}
+        </span>,
       );
       continue;
     }
 
     // Booleans
     if (line.substring(i, i + 4) === 'true') {
-      tokens.push(<span key={key++} className="mjr-syn-boolean">true</span>);
+      tokens.push(
+        <span key={key++} className="mjr-syn-boolean">
+          true
+        </span>,
+      );
       i += 4;
       continue;
     }
     if (line.substring(i, i + 5) === 'false') {
-      tokens.push(<span key={key++} className="mjr-syn-boolean">false</span>);
+      tokens.push(
+        <span key={key++} className="mjr-syn-boolean">
+          false
+        </span>,
+      );
       i += 5;
       continue;
     }
 
     // Null
     if (line.substring(i, i + 4) === 'null') {
-      tokens.push(<span key={key++} className="mjr-syn-null">null</span>);
+      tokens.push(
+        <span key={key++} className="mjr-syn-null">
+          null
+        </span>,
+      );
       i += 4;
       continue;
     }
 
     // Brackets and structural characters
     if (ch === '{' || ch === '}' || ch === '[' || ch === ']') {
-      tokens.push(<span key={key++} className="mjr-syn-bracket">{ch}</span>);
+      tokens.push(
+        <span key={key++} className="mjr-syn-bracket">
+          {ch}
+        </span>,
+      );
       i++;
       continue;
     }
 
     // Colon and comma
-    tokens.push(<span key={key++} className="mjr-syn-punctuation">{ch}</span>);
+    tokens.push(
+      <span key={key++} className="mjr-syn-punctuation">
+        {ch}
+      </span>,
+    );
     i++;
   }
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>modern-json-react — Interactive Demo</title>
+  <link rel="stylesheet" href="../dist/styles.css" />
   <style>
     :root {
       --bg: #f8f9fa;
@@ -12,23 +13,6 @@
       --text-muted: #666;
       --border: #e0e0e0;
       --primary: #0066cc;
-      --primary-hover: #004da6;
-      --error: #e51400;
-      --warning: #bf8803;
-      --success: #16825d;
-      --key-color: #0451a5;
-      --string-color: #0a7e07;
-      --number-color: #098658;
-      --boolean-color: #7a3e9d;
-      --null-color: #808080;
-      --bracket-color: #333;
-      --gutter-bg: #f5f5f5;
-      --gutter-fg: #999;
-      --selection: #add6ff;
-      --tree-hover: #f0f4ff;
-      --tree-selected: #e0ecff;
-      --tree-line: #d0d0d0;
-      --type-badge-bg: #eef2f7;
       --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
     }
 
@@ -39,20 +23,6 @@
       --text-muted: #999;
       --border: #3c3c3c;
       --primary: #4da6ff;
-      --primary-hover: #80bfff;
-      --key-color: #9cdcfe;
-      --string-color: #ce9178;
-      --number-color: #b5cea8;
-      --boolean-color: #569cd6;
-      --null-color: #808080;
-      --bracket-color: #ccc;
-      --gutter-bg: #252526;
-      --gutter-fg: #858585;
-      --selection: #264f78;
-      --tree-hover: #2a2d2e;
-      --tree-selected: #094771;
-      --tree-line: #4a4a4a;
-      --type-badge-bg: #2d2d30;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -64,7 +34,7 @@
       line-height: 1.5;
     }
 
-    .app {
+    .demo-app {
       max-width: 1200px;
       margin: 0 auto;
       padding: 24px;
@@ -79,18 +49,10 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .header h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-
+    .header h1 { font-size: 1.5rem; font-weight: 600; }
     .header h1 span { color: var(--primary); }
 
-    .controls {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
+    .controls { display: flex; gap: 8px; align-items: center; }
 
     .btn {
       padding: 6px 12px;
@@ -103,274 +65,56 @@
       transition: all 0.15s;
     }
     .btn:hover { border-color: var(--primary); color: var(--primary); }
-    .btn--active { background: var(--primary); color: white; border-color: var(--primary); }
-    .btn:disabled { opacity: 0.4; cursor: default; }
 
-    /* Editor Container */
-    .editor-container {
+    /* Responsive demo controls */
+    .responsive-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 12px 16px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      height: 500px;
-    }
-
-    /* Toolbar */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      padding: 6px 12px;
-      gap: 8px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-      flex-shrink: 0;
-    }
-
-    .toolbar .mode-group {
-      display: flex;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .toolbar .mode-btn {
-      padding: 4px 14px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 13px;
-      border-right: 1px solid var(--border);
-    }
-    .toolbar .mode-btn:last-child { border-right: none; }
-    .toolbar .mode-btn--active { background: var(--primary); color: white; }
-    .toolbar .mode-btn:hover:not(.mode-btn--active) { background: var(--tree-hover); }
-
-    .toolbar .separator { width: 1px; height: 20px; background: var(--border); }
-
-    .toolbar .search-input {
-      flex: 0 1 200px;
-      padding: 4px 8px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      font-size: 13px;
-      background: var(--surface);
-      color: var(--text);
-    }
-    .toolbar .search-input:focus { outline: none; border-color: var(--primary); }
-
-    .toolbar-right { margin-left: auto; display: flex; gap: 4px; }
-
-    /* Editor Content */
-    .editor-content {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .editor-panel {
-      flex: 1;
-      overflow: auto;
-      position: relative;
-    }
-
-    .editor-panel + .editor-panel {
-      border-left: 1px solid var(--border);
-    }
-
-    /* Code Editor */
-    .code-editor {
-      position: relative;
-      height: 100%;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .code-display {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      padding: 12px 12px 12px 56px;
-      pointer-events: none;
-      white-space: pre;
-      overflow: hidden;
-    }
-
-    .code-textarea {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      width: 100%;
-      height: 100%;
-      padding: 12px 12px 12px 56px;
-      border: none;
-      background: transparent;
-      color: transparent;
-      caret-color: var(--text);
-      font-family: inherit;
-      font-size: inherit;
-      line-height: inherit;
-      resize: none;
-      outline: none;
-      white-space: pre;
-      overflow: auto;
-      tab-size: 2;
-    }
-
-    .code-textarea::selection {
-      background: var(--selection);
-      color: transparent;
-    }
-
-    .line-numbers {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 48px;
-      padding: 12px 8px;
-      background: var(--gutter-bg);
-      color: var(--gutter-fg);
-      text-align: right;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      line-height: 1.5;
-      user-select: none;
-      border-right: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .line-numbers div { padding-right: 4px; }
-
-    .syn-key { color: var(--key-color); }
-    .syn-string { color: var(--string-color); }
-    .syn-number { color: var(--number-color); }
-    .syn-boolean { color: var(--boolean-color); }
-    .syn-null { color: var(--null-color); font-style: italic; }
-    .syn-bracket { color: var(--bracket-color); font-weight: 600; }
-    .syn-punct { color: var(--text-muted); }
-
-    .error-line { background: rgba(229, 20, 0, 0.08); }
-
-    /* Tree Editor */
-    .tree-editor {
-      padding: 12px;
-      font-family: var(--font-mono);
-      font-size: 13px;
-    }
-
-    .tree-node {
-      padding: 2px 0;
-      display: flex;
       flex-wrap: wrap;
-      align-items: center;
-      gap: 4px;
-      border-radius: 4px;
-      padding: 2px 4px;
     }
-    .tree-node:hover { background: var(--tree-hover); }
 
-    .tree-arrow {
-      width: 16px;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-      flex-shrink: 0;
-      font-size: 10px;
+    .responsive-controls label {
+      font-size: 13px;
+      font-weight: 600;
       color: var(--text-muted);
-    }
-    .tree-arrow--expandable:hover { color: var(--primary); }
-
-    .tree-key {
-      color: var(--key-color);
-      cursor: pointer;
-      font-weight: 500;
+      white-space: nowrap;
     }
 
-    .tree-colon { color: var(--text-muted); margin: 0 2px; }
-
-    .tree-value { cursor: pointer; }
-    .tree-value--string { color: var(--string-color); }
-    .tree-value--number { color: var(--number-color); }
-    .tree-value--boolean { color: var(--boolean-color); }
-    .tree-value--null { color: var(--null-color); font-style: italic; }
-
-    .tree-type {
-      font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 3px;
-      background: var(--type-badge-bg);
-      color: var(--text-muted);
-      margin-left: 4px;
+    .responsive-controls .size-slider {
+      flex: 1;
+      min-width: 120px;
+      accent-color: var(--primary);
     }
 
-    .tree-count {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-left: 4px;
-    }
-
-    .tree-delete {
-      opacity: 0;
-      border: none;
-      background: none;
-      color: var(--error);
-      cursor: pointer;
+    .responsive-controls .size-label {
+      font-family: var(--font-mono);
       font-size: 12px;
-      padding: 0 4px;
-      margin-left: auto;
-    }
-    .tree-node:hover .tree-delete { opacity: 1; }
-
-    .tree-children {
-      width: 100%;
-      padding-left: 20px;
-      border-left: 1px solid var(--tree-line);
-      margin-left: 8px;
+      color: var(--primary);
+      min-width: 50px;
     }
 
-    .tree-add {
-      padding: 4px 12px;
-      margin-top: 8px;
-      border: 1px dashed var(--border);
+    .responsive-controls .preset-btn {
+      padding: 3px 10px;
+      border: 1px solid var(--border);
       border-radius: 4px;
       background: transparent;
-      color: var(--primary);
+      color: var(--text);
       cursor: pointer;
       font-size: 12px;
     }
-    .tree-add:hover { border-color: var(--primary); background: var(--tree-hover); }
+    .responsive-controls .preset-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .responsive-controls .preset-btn--active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    .tree-edit-input {
-      border: 1px solid var(--primary);
-      border-radius: 3px;
-      padding: 1px 4px;
-      font-family: inherit;
-      font-size: inherit;
-      background: var(--surface);
-      color: var(--text);
-      outline: none;
+    .editor-wrapper {
+      margin: 0 auto;
+      transition: width 0.3s ease;
     }
-
-    /* Status Bar */
-    .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 4px 12px;
-      border-top: 1px solid var(--border);
-      background: var(--surface);
-      font-size: 12px;
-      color: var(--text-muted);
-      flex-shrink: 0;
-    }
-
-    .status-indicator { display: flex; align-items: center; gap: 4px; }
-    .status--valid .status-icon { color: var(--success); }
-    .status--error .status-icon { color: var(--error); }
-    .status--warning .status-icon { color: var(--warning); }
-    .status-sep { color: var(--border); }
 
     /* Schema panel */
     .schema-panel {
@@ -396,55 +140,90 @@
       border-top: 1px solid var(--border);
       font-family: var(--font-mono);
       font-size: 13px;
-      background: var(--gutter-bg);
+      background: var(--surface);
       color: var(--text);
       resize: vertical;
       outline: none;
     }
 
-    /* Error panel */
-    .error-panel {
-      max-height: 120px;
-      overflow-y: auto;
-      border-top: 1px solid var(--border);
-      background: var(--gutter-bg);
-      font-size: 12px;
-      flex-shrink: 0;
+    /* Validation errors display */
+    .validation-panel {
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--surface);
     }
 
-    .error-item {
-      padding: 4px 12px;
+    .validation-panel summary {
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .validation-item {
+      padding: 4px 16px;
+      font-size: 12px;
+      border-top: 1px solid var(--border);
       display: flex;
       gap: 8px;
-      cursor: pointer;
-      border-bottom: 1px solid var(--border);
     }
-    .error-item:hover { background: var(--tree-hover); }
-    .error-item .error-icon { color: var(--error); flex-shrink: 0; }
-    .error-item .warn-icon { color: var(--warning); flex-shrink: 0; }
-    .error-item .error-path { color: var(--primary); font-family: var(--font-mono); }
-    .error-item .error-msg { color: var(--text-muted); }
 
-    .match-highlight { background: rgba(255, 200, 0, 0.35); border-radius: 2px; }
-    .match-current { background: rgba(255, 140, 0, 0.5); }
+    .validation-item .v-path {
+      color: var(--primary);
+      font-family: var(--font-mono);
+    }
+
+    .validation-item .v-msg {
+      color: var(--text-muted);
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
 
     @media (max-width: 768px) {
-      .editor-content { flex-direction: column; }
-      .editor-panel + .editor-panel { border-left: none; border-top: 1px solid var(--border); }
+      .demo-app { padding: 12px; }
+      .header h1 { font-size: 1.1rem; }
+    }
+
+    @media (max-width: 480px) {
+      .demo-app { padding: 8px; }
+      .header { flex-direction: column; gap: 8px; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
-  <div class="app" id="app"></div>
+  <div id="app"><div class="demo-app"><div class="loading">Loading component...</div></div></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.2/babel.min.js"></script>
+  <!-- Import map: resolve bare specifiers used by dist/index.mjs -->
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.3.1",
+        "react-dom": "https://esm.sh/react-dom@18.3.1",
+        "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+        "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+        "htm": "https://esm.sh/htm@3.1.1"
+      }
+    }
+  </script>
 
-  <script type="text/babel">
-    const { useState, useCallback, useMemo, useEffect, useRef } = React;
+  <script type="module">
+    import React, { useState, useCallback, useMemo, useEffect } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import htm from 'htm';
+    import { JsonEditor } from '../dist/index.mjs';
 
-    // ---- Sample Data ----
+    // htm: tagged template JSX alternative — no build step needed
+    const html = htm.bind(React.createElement);
+
     const SAMPLE_JSON = {
       "name": "modern-json-react",
       "version": "1.0.0",
@@ -511,521 +290,118 @@
       "required": ["name", "version"]
     };
 
-    // ---- Lightweight Schema Validator ----
-    function validateValue(value, schema, path = '$') {
-      const errors = [];
-      if (!schema || value === undefined) return errors;
+    const PRESETS = [
+      { label: 'Mobile', width: 360 },
+      { label: 'Tablet', width: 768 },
+      { label: 'Desktop', width: 100, isPercent: true },
+    ];
 
-      if (schema.type) {
-        const actualType = getJsonType(value);
-        const types = Array.isArray(schema.type) ? schema.type : [schema.type];
-        if (!types.includes(actualType)) {
-          errors.push({ path, message: `Expected ${types.join('|')}, got ${actualType}`, severity: 'error' });
-        }
-      }
-
-      if (schema.enum && !schema.enum.includes(value)) {
-        errors.push({ path, message: `Must be one of: ${schema.enum.join(', ')}`, severity: 'error' });
-      }
-
-      if (typeof value === 'string') {
-        if (schema.minLength !== undefined && value.length < schema.minLength)
-          errors.push({ path, message: `Min length ${schema.minLength}`, severity: 'error' });
-        if (schema.maxLength !== undefined && value.length > schema.maxLength)
-          errors.push({ path, message: `Max length ${schema.maxLength}`, severity: 'error' });
-        if (schema.pattern && !new RegExp(schema.pattern).test(value))
-          errors.push({ path, message: `Must match ${schema.pattern}`, severity: 'warning' });
-      }
-
-      if (typeof value === 'number') {
-        if (schema.minimum !== undefined && value < schema.minimum)
-          errors.push({ path, message: `Must be >= ${schema.minimum}`, severity: 'error' });
-        if (schema.maximum !== undefined && value > schema.maximum)
-          errors.push({ path, message: `Must be <= ${schema.maximum}`, severity: 'error' });
-      }
-
-      if (Array.isArray(value)) {
-        if (schema.minItems !== undefined && value.length < schema.minItems)
-          errors.push({ path, message: `Min ${schema.minItems} items`, severity: 'error' });
-        if (schema.items) {
-          value.forEach((item, i) => {
-            errors.push(...validateValue(item, schema.items, `${path}[${i}]`));
-          });
-        }
-      }
-
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        if (schema.required) {
-          schema.required.forEach(key => {
-            if (!(key in value)) errors.push({ path: `${path}.${key}`, message: `Required`, severity: 'error' });
-          });
-        }
-        if (schema.properties) {
-          Object.keys(value).forEach(key => {
-            if (schema.properties[key]) {
-              errors.push(...validateValue(value[key], schema.properties[key], `${path}.${key}`));
-            }
-          });
-        }
-      }
-
-      return errors;
-    }
-
-    function getJsonType(v) {
-      if (v === null) return 'null';
-      if (Array.isArray(v)) return 'array';
-      return typeof v === 'number' && Number.isInteger(v) ? 'integer' : typeof v;
-    }
-
-    // ---- Syntax Highlighter ----
-    function highlightJson(text) {
-      return text.replace(
-        /("(?:[^"\\]|\\.)*")\s*:/g, '<span class="syn-key">$1</span>:'
-      ).replace(
-        /:\s*("(?:[^"\\]|\\.)*")/g, ': <span class="syn-string">$1</span>'
-      ).replace(
-        /(?<=[\[,\s])("(?:[^"\\]|\\.)*")(?=[,\]\s])/g, '<span class="syn-string">$1</span>'
-      ).replace(
-        /:\s*(-?\d+\.?\d*(?:[eE][+-]?\d+)?)/g, ': <span class="syn-number">$1</span>'
-      ).replace(
-        /:\s*(true|false)/g, ': <span class="syn-boolean">$1</span>'
-      ).replace(
-        /:\s*(null)/g, ': <span class="syn-null">$1</span>'
-      ).replace(
-        /([{}[\]])/g, '<span class="syn-bracket">$1</span>'
-      );
-    }
-
-    // ---- Tree Node Component ----
-    function TreeNode({ nodeKey, value, path, depth, expanded, onToggle, onChange, onDelete }) {
-      const [editing, setEditing] = useState(false);
-      const [editVal, setEditVal] = useState('');
-      const type = getJsonType(value);
-      const isExpandable = type === 'object' || type === 'array';
-      const isExpanded = expanded.has(path);
-
-      const childKeys = isExpandable
-        ? (Array.isArray(value) ? value.map((_, i) => i) : Object.keys(value))
-        : [];
-
-      const startEdit = () => {
-        if (isExpandable) return;
-        setEditVal(type === 'string' ? value : JSON.stringify(value));
-        setEditing(true);
-      };
-
-      const finishEdit = () => {
-        setEditing(false);
-        let newVal;
-        if (type === 'string') newVal = editVal;
-        else if (type === 'number') { const n = Number(editVal); newVal = isNaN(n) ? value : n; }
-        else if (type === 'boolean') newVal = editVal === 'true';
-        else if (type === 'null') newVal = null;
-        else { try { newVal = JSON.parse(editVal); } catch { newVal = value; } }
-        onChange(path, newVal);
-      };
-
-      const typeLabel = { string: 'str', number: 'num', integer: 'num', boolean: 'bool', null: 'null', object: 'obj', array: 'arr' }[type] || type;
-
-      return (
-        <div>
-          <div className="tree-node" style={{ paddingLeft: depth * 20 }}>
-            <span
-              className={`tree-arrow ${isExpandable ? 'tree-arrow--expandable' : ''}`}
-              onClick={() => isExpandable && onToggle(path)}
-            >
-              {isExpandable ? (isExpanded ? '\u25BC' : '\u25B6') : '\u00A0'}
-            </span>
-
-            <span className="tree-key">
-              {typeof nodeKey === 'number' ? nodeKey : `"${nodeKey}"`}
-            </span>
-            <span className="tree-colon">:</span>
-
-            {editing ? (
-              <input
-                className="tree-edit-input"
-                value={editVal}
-                onChange={e => setEditVal(e.target.value)}
-                onBlur={finishEdit}
-                onKeyDown={e => { if (e.key === 'Enter') finishEdit(); if (e.key === 'Escape') setEditing(false); }}
-                autoFocus
-              />
-            ) : isExpandable ? (
-              <span>
-                <span className="syn-bracket">{type === 'object' ? '{' : '['}</span>
-                {!isExpanded && <span className="tree-count">{childKeys.length} items</span>}
-                {!isExpanded && <span className="syn-bracket">{type === 'object' ? '}' : ']'}</span>}
-              </span>
-            ) : (
-              <span className={`tree-value tree-value--${type}`} onDoubleClick={startEdit}>
-                {type === 'string' ? `"${value}"` : String(value)}
-              </span>
-            )}
-
-            <span className="tree-type">{typeLabel}</span>
-            <button className="tree-delete" onClick={() => onDelete(path)} title="Delete">✕</button>
-          </div>
-
-          {isExpandable && isExpanded && (
-            <div className="tree-children">
-              {childKeys.map(k => (
-                <TreeNode
-                  key={k}
-                  nodeKey={k}
-                  value={Array.isArray(value) ? value[k] : value[k]}
-                  path={Array.isArray(value) ? `${path}[${k}]` : `${path}.${k}`}
-                  depth={depth + 1}
-                  expanded={expanded}
-                  onToggle={onToggle}
-                  onChange={onChange}
-                  onDelete={onDelete}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    // ---- Main App ----
     function App() {
-      const [text, setText] = useState(JSON.stringify(SAMPLE_JSON, null, 2));
-      const [mode, setMode] = useState('code');
       const [theme, setTheme] = useState('light');
+      const [mode, setMode] = useState('code');
+      const [containerWidth, setContainerWidth] = useState(100);
       const [schema, setSchema] = useState(JSON.stringify(SAMPLE_SCHEMA, null, 2));
-      const [history, setHistory] = useState([JSON.stringify(SAMPLE_JSON, null, 2)]);
-      const [histPos, setHistPos] = useState(0);
-      const [expanded, setExpanded] = useState(new Set(['$']));
-      const [searchQuery, setSearchQuery] = useState('');
-      const [cursor, setCursor] = useState({ line: 1, col: 1 });
+      const [validationErrors, setValidationErrors] = useState([]);
+      const [jsonValue, setJsonValue] = useState(SAMPLE_JSON);
 
-      const textareaRef = useRef(null);
-      const displayRef = useRef(null);
+      const parsedSchema = useMemo(() => {
+        try { return JSON.parse(schema); }
+        catch { return undefined; }
+      }, [schema]);
 
-      // Parse
-      const parsed = useMemo(() => {
-        try { return { value: JSON.parse(text), error: null }; }
-        catch (e) { return { value: null, error: e.message }; }
-      }, [text]);
-
-      // Schema validation
-      const schemaErrors = useMemo(() => {
-        if (!parsed.value) return [];
-        try {
-          const s = JSON.parse(schema);
-          return validateValue(parsed.value, s);
-        } catch { return []; }
-      }, [parsed.value, schema]);
-
-      // Search matches
-      const searchMatches = useMemo(() => {
-        if (!searchQuery) return [];
-        try {
-          const re = new RegExp(searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-          const matches = [];
-          text.split('\n').forEach((line, i) => {
-            let m;
-            while ((m = re.exec(line)) !== null) {
-              matches.push({ line: i + 1, col: m.index + 1, text: m[0] });
-            }
-          });
-          return matches;
-        } catch { return []; }
-      }, [searchQuery, text]);
-
-      // Stats
-      const stats = useMemo(() => {
-        if (!parsed.value) return null;
-        let props = 0, arrays = 0, nodes = 0, maxDepth = 0;
-        function walk(v, d) {
-          nodes++;
-          maxDepth = Math.max(maxDepth, d);
-          if (Array.isArray(v)) { arrays++; v.forEach(i => walk(i, d+1)); }
-          else if (v && typeof v === 'object') {
-            const keys = Object.keys(v);
-            props += keys.length;
-            keys.forEach(k => walk(v[k], d+1));
-          }
-        }
-        walk(parsed.value, 0);
-        return { props, arrays, nodes, maxDepth, bytes: new TextEncoder().encode(text).length };
-      }, [parsed.value, text]);
-
-      // Theme
       useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
       }, [theme]);
 
-      // Update text with history
-      const updateText = useCallback((newText) => {
-        setText(newText);
-        setHistory(prev => {
-          const trimmed = prev.slice(0, histPos + 1);
-          trimmed.push(newText);
-          return trimmed.slice(-100);
-        });
-        setHistPos(prev => Math.min(prev + 1, 99));
-      }, [histPos]);
-
-      const undo = useCallback(() => {
-        if (histPos > 0) {
-          const newPos = histPos - 1;
-          setHistPos(newPos);
-          setText(history[newPos]);
-        }
-      }, [histPos, history]);
-
-      const redo = useCallback(() => {
-        if (histPos < history.length - 1) {
-          const newPos = histPos + 1;
-          setHistPos(newPos);
-          setText(history[newPos]);
-        }
-      }, [histPos, history]);
-
-      const format = useCallback(() => {
-        if (parsed.value) updateText(JSON.stringify(parsed.value, null, 2));
-      }, [parsed.value, updateText]);
-
-      const minify = useCallback(() => {
-        if (parsed.value) updateText(JSON.stringify(parsed.value));
-      }, [parsed.value, updateText]);
-
-      const sortKeys = useCallback(() => {
-        if (!parsed.value) return;
-        function deepSort(v) {
-          if (Array.isArray(v)) return v.map(deepSort);
-          if (v && typeof v === 'object') {
-            const sorted = {};
-            Object.keys(v).sort().forEach(k => sorted[k] = deepSort(v[k]));
-            return sorted;
-          }
-          return v;
-        }
-        updateText(JSON.stringify(deepSort(parsed.value), null, 2));
-      }, [parsed.value, updateText]);
-
-      // Tree handlers
-      const toggleExpand = useCallback((path) => {
-        setExpanded(prev => {
-          const next = new Set(prev);
-          next.has(path) ? next.delete(path) : next.add(path);
-          return next;
-        });
+      const handleChange = useCallback((value, rawText) => {
+        setJsonValue(value);
       }, []);
 
-      const treeChange = useCallback((path, newVal) => {
-        if (!parsed.value) return;
-        const segs = path.replace(/^\$\.?/, '').replace(/\[(\d+)\]/g, '.$1').split('.').filter(Boolean);
-        const clone = JSON.parse(JSON.stringify(parsed.value));
-        let obj = clone;
-        for (let i = 0; i < segs.length - 1; i++) {
-          obj = Array.isArray(obj) ? obj[parseInt(segs[i])] : obj[segs[i]];
-        }
-        const last = segs[segs.length - 1];
-        if (Array.isArray(obj)) obj[parseInt(last)] = newVal;
-        else obj[last] = newVal;
-        updateText(JSON.stringify(clone, null, 2));
-      }, [parsed.value, updateText]);
-
-      const treeDelete = useCallback((path) => {
-        if (!parsed.value) return;
-        const segs = path.replace(/^\$\.?/, '').replace(/\[(\d+)\]/g, '.$1').split('.').filter(Boolean);
-        const clone = JSON.parse(JSON.stringify(parsed.value));
-        let obj = clone;
-        for (let i = 0; i < segs.length - 1; i++) {
-          obj = Array.isArray(obj) ? obj[parseInt(segs[i])] : obj[segs[i]];
-        }
-        const last = segs[segs.length - 1];
-        if (Array.isArray(obj)) obj.splice(parseInt(last), 1);
-        else delete obj[last];
-        updateText(JSON.stringify(clone, null, 2));
-      }, [parsed.value, updateText]);
-
-      // Sync scroll
-      const handleScroll = useCallback(() => {
-        if (textareaRef.current && displayRef.current) {
-          displayRef.current.scrollTop = textareaRef.current.scrollTop;
-          displayRef.current.scrollLeft = textareaRef.current.scrollLeft;
-        }
+      const handleValidate = useCallback((errors) => {
+        setValidationErrors(errors);
       }, []);
 
-      // Cursor tracking
-      const updateCursor = useCallback(() => {
-        const ta = textareaRef.current;
-        if (!ta) return;
-        const pos = ta.selectionStart;
-        const lines = ta.value.substring(0, pos).split('\n');
-        setCursor({ line: lines.length, col: lines[lines.length - 1].length + 1 });
-      }, []);
+      const widthStyle = containerWidth > 100 ? `${containerWidth}px` : '100%';
+      const sliderValue = containerWidth <= 100 ? 1200 : containerWidth;
+      const sizeLabel = containerWidth > 100 ? `${containerWidth}px` : '100%';
 
-      // Highlighted text with search
-      const highlighted = useMemo(() => {
-        let html = highlightJson(text.replace(/&/g, '&amp;').replace(/</g, '&lt;'));
-        if (searchQuery) {
-          try {
-            const re = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            html = html.replace(re, '<span class="match-highlight">$1</span>');
-          } catch {}
-        }
-        return html;
-      }, [text, searchQuery]);
-
-      const lines = text.split('\n');
-      const formatBytes = (b) => b < 1024 ? b + ' B' : b < 1048576 ? (b/1024).toFixed(1) + ' KB' : (b/1048576).toFixed(1) + ' MB';
-
-      return (
-        <div className="app">
-          <div className="header">
+      return html`
+        <div class="demo-app">
+          <div class="header">
             <h1><span>modern-json-react</span> — Interactive Demo</h1>
-            <div className="controls">
-              <button className="btn" onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}>
-                {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+            <div class="controls">
+              <button class="btn" onClick=${() => setTheme(t => t === 'light' ? 'dark' : 'light')}>
+                ${theme === 'light' ? '🌙 Dark' : '☀️ Light'}
               </button>
             </div>
           </div>
 
-          <div className="editor-container">
-            {/* Toolbar */}
-            <div className="toolbar">
-              <div className="mode-group">
-                {['code', 'tree', 'split'].map(m => (
-                  <button key={m} className={`mode-btn ${mode === m ? 'mode-btn--active' : ''}`} onClick={() => setMode(m)}>
-                    {m.charAt(0).toUpperCase() + m.slice(1)}
-                  </button>
-                ))}
-              </div>
-
-              <div className="separator" />
-
-              <input
-                className="search-input"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-              />
-              {searchMatches.length > 0 && (
-                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{searchMatches.length} matches</span>
-              )}
-
-              <div className="toolbar-right">
-                <button className="btn" onClick={undo} disabled={histPos <= 0} title="Undo (Ctrl+Z)">↶</button>
-                <button className="btn" onClick={redo} disabled={histPos >= history.length - 1} title="Redo">↷</button>
-                <button className="btn" onClick={format} disabled={!parsed.value} title="Format">{ '{ }' }</button>
-                <button className="btn" onClick={minify} disabled={!parsed.value} title="Minify">Min</button>
-                <button className="btn" onClick={sortKeys} disabled={!parsed.value} title="Sort keys">A→Z</button>
-              </div>
-            </div>
-
-            {/* Editor content */}
-            <div className="editor-content">
-              {(mode === 'code' || mode === 'split') && (
-                <div className="editor-panel">
-                  <div className="code-editor">
-                    <div className="line-numbers">
-                      {lines.map((_, i) => <div key={i}>{i + 1}</div>)}
-                    </div>
-                    <div
-                      ref={displayRef}
-                      className="code-display"
-                      dangerouslySetInnerHTML={{ __html: highlighted }}
-                    />
-                    <textarea
-                      ref={textareaRef}
-                      className="code-textarea"
-                      value={text}
-                      onChange={e => updateText(e.target.value)}
-                      onScroll={handleScroll}
-                      onClick={updateCursor}
-                      onKeyUp={updateCursor}
-                      spellCheck={false}
-                      aria-label="JSON code editor"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {(mode === 'tree' || mode === 'split') && (
-                <div className="editor-panel" style={{ overflow: 'auto' }}>
-                  <div className="tree-editor">
-                    {parsed.value ? (
-                      <TreeNode
-                        nodeKey="root"
-                        value={parsed.value}
-                        path="$"
-                        depth={0}
-                        expanded={expanded}
-                        onToggle={toggleExpand}
-                        onChange={treeChange}
-                        onDelete={treeDelete}
-                      />
-                    ) : (
-                      <div style={{ padding: 20, color: 'var(--text-muted)' }}>
-                        {parsed.error ? `Parse error: ${parsed.error}` : 'No JSON to display'}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Error panel */}
-            {(parsed.error || schemaErrors.length > 0) && (
-              <div className="error-panel">
-                {parsed.error && (
-                  <div className="error-item">
-                    <span className="error-icon">✕</span>
-                    <span className="error-msg">{parsed.error}</span>
-                  </div>
-                )}
-                {schemaErrors.map((err, i) => (
-                  <div key={i} className="error-item">
-                    <span className={err.severity === 'error' ? 'error-icon' : 'warn-icon'}>
-                      {err.severity === 'error' ? '✕' : '⚠'}
-                    </span>
-                    <span className="error-path">{err.path}</span>
-                    <span className="error-msg">{err.message}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Status bar */}
-            <div className="status-bar">
-              <span className={`status-indicator ${parsed.error ? 'status--error' : schemaErrors.length ? 'status--warning' : 'status--valid'}`}>
-                <span className="status-icon">{parsed.error ? '✕' : schemaErrors.length > 0 ? '⚠' : '✓'}</span>
-                <span>{parsed.error ? 'Invalid JSON' : schemaErrors.length > 0 ? `${schemaErrors.length} issue${schemaErrors.length !== 1 ? 's' : ''}` : 'Valid JSON'}</span>
-              </span>
-              <span className="status-sep">|</span>
-              <span>Ln {cursor.line}, Col {cursor.col}</span>
-              {stats && (
-                <>
-                  <span className="status-sep">|</span>
-                  <span>{stats.props} properties, {stats.arrays} arrays</span>
-                  <span className="status-sep">|</span>
-                  <span>{formatBytes(stats.bytes)}</span>
-                </>
-              )}
-            </div>
+          <div class="responsive-controls">
+            <label>Container size:</label>
+            ${PRESETS.map(p => html`
+              <button
+                key=${p.label}
+                class=${`preset-btn ${containerWidth === (p.isPercent ? 100 : p.width) ? 'preset-btn--active' : ''}`}
+                onClick=${() => setContainerWidth(p.isPercent ? 100 : p.width)}
+              >
+                ${p.label} ${!p.isPercent ? `(${p.width}px)` : ''}
+              </button>
+            `)}
+            <input
+              type="range"
+              class="size-slider"
+              min="280"
+              max="1200"
+              value=${sliderValue}
+              onInput=${e => setContainerWidth(Number(e.target.value))}
+            />
+            <span class="size-label">${sizeLabel}</span>
           </div>
 
-          {/* Schema editor */}
-          <details className="schema-panel">
+          <div class="editor-wrapper" style=${{ width: widthStyle }}>
+            <${JsonEditor}
+              value=${jsonValue}
+              onChange=${handleChange}
+              mode=${mode}
+              onModeChange=${setMode}
+              schema=${parsedSchema}
+              onValidate=${handleValidate}
+              theme=${theme}
+              height=${500}
+              searchable=${true}
+              sortable=${true}
+              indentation=${2}
+              lineNumbers=${true}
+              bracketMatching=${true}
+            />
+          </div>
+
+          ${validationErrors.length > 0 && html`
+            <details class="validation-panel" open>
+              <summary>${validationErrors.length} validation ${validationErrors.length === 1 ? 'issue' : 'issues'}</summary>
+              ${validationErrors.map((err, i) => html`
+                <div key=${i} class="validation-item">
+                  <span class="v-path">${err.path}</span>
+                  <span class="v-msg">${err.message}</span>
+                </div>
+              `)}
+            </details>
+          `}
+
+          <details class="schema-panel">
             <summary>JSON Schema (for validation)</summary>
             <textarea
-              className="schema-textarea"
-              value={schema}
-              onChange={e => setSchema(e.target.value)}
-              spellCheck={false}
+              class="schema-textarea"
+              value=${schema}
+              onInput=${e => setSchema(e.target.value)}
+              spellcheck=${false}
             />
           </details>
         </div>
-      );
+      `;
     }
 
-    ReactDOM.createRoot(document.getElementById('app')).render(<App />);
+    createRoot(document.getElementById('app')).render(html`<${App} />`);
   </script>
 </body>
 </html>

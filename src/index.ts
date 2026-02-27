@@ -21,12 +21,7 @@ export type {
   CustomValidator,
 } from './types/validation';
 
-export type {
-  JsonNodeType,
-  TreeNode,
-  TreeAction,
-  ContextMenuItem,
-} from './types/tree';
+export type { JsonNodeType, TreeNode, TreeAction, ContextMenuItem } from './types/tree';
 
 export type { ThemeConfig } from './themes/types';
 
@@ -44,3 +39,4 @@ export { getByPath, setByPath, deleteByPath, parsePath, buildPath } from './core
 export { useJsonParser } from './hooks/useJsonParser';
 export { useUndoRedo } from './hooks/useUndoRedo';
 export { useSearch } from './hooks/useSearch';
+export { useContainerWidth } from './hooks/useContainerWidth';

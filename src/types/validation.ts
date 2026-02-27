@@ -34,7 +34,7 @@ export type JSONSchema = Record<string, unknown> & {
 /** Custom validator function — returns an array of errors (empty = valid) */
 export type CustomValidator = (
   value: unknown,
-  path: string
+  path: string,
 ) => ValidationError[] | Promise<ValidationError[]>;
 
 /** Result from the validation engine */

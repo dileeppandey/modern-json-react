@@ -7,10 +7,10 @@ export interface TreeEditorProps {
   value: unknown;
   onChange: (value: unknown) => void;
   readOnly: boolean;
+  searchQuery?: string;
+  searchCaseSensitive?: boolean;
   className?: string;
 }
-
-let nodeIdCounter = 0;
 
 /**
  * Tree-based visual editor for JSON data.
@@ -20,41 +20,35 @@ export const TreeEditor: React.FC<TreeEditorProps> = ({
   value,
   onChange,
   readOnly,
+  searchQuery = '',
+  searchCaseSensitive = false,
   className = '',
 }) => {
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set(['$']));
 
-  // Build tree structure from the JSON value
   const tree = useMemo(() => {
-    nodeIdCounter = 0;
     return buildTree(value, '$', 'root', 0, expandedPaths);
   }, [value, expandedPaths]);
 
   const handleToggle = useCallback((id: string) => {
     setExpandedPaths((prev) => {
       const next = new Set(prev);
-      // Find the path for this id — we encode path in the id
       const path = id;
-      if (next.has(path)) {
-        next.delete(path);
-      } else {
-        next.add(path);
-      }
+      if (next.has(path)) next.delete(path);
+      else next.add(path);
       return next;
     });
   }, []);
 
   const handleValueChange = useCallback(
     (path: string, newValue: unknown) => {
-      const updated = setByPath(value, path, newValue);
-      onChange(updated);
+      onChange(setByPath(value, path, newValue));
     },
-    [value, onChange]
+    [value, onChange],
   );
 
   const handleKeyChange = useCallback(
     (path: string, oldKey: string, newKey: string) => {
-      // Rename: delete old key, set new key with the same value
       const segments = path.split('.');
       const parentPath = segments.slice(0, -1).join('.') || '$';
       const currentValue = getNestedValue(value, path);
@@ -63,15 +57,14 @@ export const TreeEditor: React.FC<TreeEditorProps> = ({
       updated = setByPath(updated, newPath, currentValue);
       onChange(updated);
     },
-    [value, onChange]
+    [value, onChange],
   );
 
   const handleDelete = useCallback(
     (path: string) => {
-      const updated = deleteByPath(value, path);
-      onChange(updated);
+      onChange(deleteByPath(value, path));
     },
-    [value, onChange]
+    [value, onChange],
   );
 
   const handleTypeChange = useCallback(
@@ -84,10 +77,9 @@ export const TreeEditor: React.FC<TreeEditorProps> = ({
         object: {},
         array: [],
       };
-      const updated = setByPath(value, path, defaults[newType]);
-      onChange(updated);
+      onChange(setByPath(value, path, defaults[newType]));
     },
-    [value, onChange]
+    [value, onChange],
   );
 
   const handleAddProperty = useCallback(() => {
@@ -99,9 +91,7 @@ export const TreeEditor: React.FC<TreeEditorProps> = ({
       const obj = value as Record<string, unknown>;
       let newKey = 'newKey';
       let counter = 1;
-      while (newKey in obj) {
-        newKey = `newKey${counter++}`;
-      }
+      while (newKey in obj) newKey = `newKey${counter++}`;
       onChange({ ...obj, [newKey]: '' });
     } else if (Array.isArray(value)) {
       onChange([...value, '']);
@@ -111,12 +101,27 @@ export const TreeEditor: React.FC<TreeEditorProps> = ({
   if (tree === null) {
     return (
       <div className={`mjr-tree-editor mjr-tree-editor--empty ${className}`}>
-        <p className="mjr-tree-editor__empty-msg">No valid JSON to display</p>
-        {!readOnly && (
-          <button className="mjr-tree-editor__add-btn" onClick={() => onChange({})}>
-            + Create empty object
-          </button>
-        )}
+        <div className="mjr-tree__empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" opacity="0.3">
+            <path
+              d="M3 7V17C3 18.1 3.9 19 5 19H19C20.1 19 21 18.1 21 17V7C21 5.9 20.1 5 19 5H5C3.9 5 3 5.9 3 7Z"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M7 9H17M7 13H13"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+          <p>No valid JSON to display</p>
+          {!readOnly && (
+            <button className="mjr-tree__add-btn" onClick={() => onChange({})}>
+              {'+'} Create empty object
+            </button>
+          )}
+        </div>
       </div>
     );
   }
@@ -136,15 +141,20 @@ export const TreeEditor: React.FC<TreeEditorProps> = ({
         onDelete={handleDelete}
         onTypeChange={handleTypeChange}
         readOnly={readOnly}
+        searchQuery={searchQuery}
+        searchCaseSensitive={searchCaseSensitive}
       />
 
       {!readOnly && (
         <button
-          className="mjr-tree-editor__add-root"
+          className="mjr-tree__add-btn mjr-tree__add-btn--root"
           onClick={handleAddProperty}
           data-testid="add-property"
         >
-          + Add property
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M6 2v8M2 6h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          Add property
         </button>
       )}
     </div>
@@ -158,13 +168,13 @@ function buildTree(
   path: string,
   key: string | number,
   depth: number,
-  expandedPaths: Set<string>
+  expandedPaths: Set<string>,
 ): TreeNodeData | null {
   if (value === undefined) return null;
 
   const type = getType(value);
   const expanded = expandedPaths.has(path);
-  const id = path; // Use path as id for simplicity
+  const id = path;
 
   const node: TreeNodeData = {
     id,
@@ -183,17 +193,17 @@ function buildTree(
     const keys = Object.keys(obj);
     node.childCount = keys.length;
     if (expanded) {
-      node.children = keys.map((k) =>
-        buildTree(obj[k], `${path}.${k}`, k, depth + 1, expandedPaths)
-      ).filter(Boolean) as TreeNodeData[];
+      node.children = keys
+        .map((k) => buildTree(obj[k], `${path}.${k}`, k, depth + 1, expandedPaths))
+        .filter(Boolean) as TreeNodeData[];
     }
   } else if (type === 'array') {
     const arr = value as unknown[];
     node.childCount = arr.length;
     if (expanded) {
-      node.children = arr.map((item, i) =>
-        buildTree(item, `${path}[${i}]`, i, depth + 1, expandedPaths)
-      ).filter(Boolean) as TreeNodeData[];
+      node.children = arr
+        .map((item, i) => buildTree(item, `${path}[${i}]`, i, depth + 1, expandedPaths))
+        .filter(Boolean) as TreeNodeData[];
     }
   }
 
@@ -212,15 +222,16 @@ function getType(value: unknown): JsonNodeType {
 }
 
 function getNestedValue(obj: unknown, path: string): unknown {
-  const segments = path.replace(/^\$\.?/, '').replace(/\[(\d+)\]/g, '.$1').split('.').filter(Boolean);
+  const segments = path
+    .replace(/^\$\.?/, '')
+    .replace(/\[(\d+)\]/g, '.$1')
+    .split('.')
+    .filter(Boolean);
   let current = obj;
   for (const seg of segments) {
     if (current === null || current === undefined) return undefined;
-    if (Array.isArray(current)) {
-      current = current[parseInt(seg, 10)];
-    } else if (typeof current === 'object') {
-      current = (current as Record<string, unknown>)[seg];
-    }
+    if (Array.isArray(current)) current = current[parseInt(seg, 10)];
+    else if (typeof current === 'object') current = (current as Record<string, unknown>)[seg];
   }
   return current;
 }

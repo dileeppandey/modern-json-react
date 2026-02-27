@@ -1,4 +1,5 @@
 import { defineConfig } from 'tsup';
+import { copyFileSync } from 'fs';
 
 export default defineConfig({
   entry: ['src/index.ts'],
@@ -9,4 +10,8 @@ export default defineConfig({
   external: ['react', 'react-dom'],
   treeshake: true,
   minify: false,
+  onSuccess: async () => {
+    // Copy the CSS file to dist so consumers can import it
+    copyFileSync('src/styles.css', 'dist/styles.css');
+  },
 });

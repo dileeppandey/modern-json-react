@@ -37,12 +37,12 @@ interface UseJsonParserResult {
  */
 export function useJsonParser(
   initialValue?: unknown,
-  options: UseJsonParserOptions = {}
+  options: UseJsonParserOptions = {},
 ): UseJsonParserResult {
   const { schema, validators, debounce = 300 } = options;
 
   const [text, setText] = useState<string>(() =>
-    initialValue !== undefined ? stringifyJson(initialValue) : ''
+    initialValue !== undefined ? stringifyJson(initialValue) : '',
   );
   const [parsedValue, setParsedValue] = useState<unknown>(initialValue);
   const [parseError, setParseError] = useState<ParseError | null>(null);
@@ -99,7 +99,7 @@ export function useJsonParser(
         setText(stringifyJson(parsedValue, indent));
       }
     },
-    [parsedValue]
+    [parsedValue],
   );
 
   return {

@@ -67,7 +67,7 @@ function extractParseError(err: SyntaxError, text: string): ParseError {
 /** Convert a character offset to line/column (both 1-based). */
 export function getLineColFromOffset(
   text: string,
-  offset: number
+  offset: number,
 ): { line: number; column: number } {
   let line = 1;
   let lastNewline = -1;
@@ -83,11 +83,7 @@ export function getLineColFromOffset(
 }
 
 /** Convert line/column (1-based) to a character offset. */
-export function getOffsetFromLineCol(
-  text: string,
-  line: number,
-  column: number
-): number {
+export function getOffsetFromLineCol(text: string, line: number, column: number): number {
   let currentLine = 1;
   for (let i = 0; i < text.length; i++) {
     if (currentLine === line) {
@@ -103,10 +99,7 @@ export function getOffsetFromLineCol(
 /**
  * Stringify a value to formatted JSON text.
  */
-export function stringifyJson(
-  value: unknown,
-  indent: number | string = 2
-): string {
+export function stringifyJson(value: unknown, indent: number | string = 2): string {
   if (value === undefined) return '';
   try {
     return JSON.stringify(value, null, indent);

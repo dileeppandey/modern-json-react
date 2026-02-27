@@ -32,7 +32,7 @@ export function minifyJson(text: string): string {
 export function sortJsonKeys(
   text: string,
   order: 'asc' | 'desc' | ((a: string, b: string) => number) = 'asc',
-  indent: IndentationType = 2
+  indent: IndentationType = 2,
 ): string {
   try {
     const parsed = JSON.parse(text);
@@ -46,7 +46,7 @@ export function sortJsonKeys(
 
 function deepSortKeys(
   value: unknown,
-  order: 'asc' | 'desc' | ((a: string, b: string) => number)
+  order: 'asc' | 'desc' | ((a: string, b: string) => number),
 ): unknown {
   if (Array.isArray(value)) {
     return value.map((item) => deepSortKeys(item, order));
