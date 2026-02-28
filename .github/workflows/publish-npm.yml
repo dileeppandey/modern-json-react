@@ -3,6 +3,7 @@ name: Publish to npm
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -21,9 +22,13 @@ jobs:
           registry-url: https://registry.npmjs.org
           cache: npm
 
-      - name: Set version from release tag
+      - name: Set version from tag or package.json
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          if [[ $GITHUB_REF_NAME == v* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION=$(node -p "require('./package.json').version")
+          fi
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           npm version "$VERSION" --allow-same-version --no-git-tag-version
 
