@@ -1,6 +1,6 @@
 {
   "name": "modern-json-react",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A production-grade, fully-featured JSON editor React component with tree view, code editing, JSON Schema validation, and accessibility-first design.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

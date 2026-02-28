@@ -5,11 +5,11 @@ export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
   dts: true,
-  sourcemap: true,
+  sourcemap: false,
   clean: true,
   external: ['react', 'react-dom'],
   treeshake: true,
-  minify: false,
+  minify: true,
   onSuccess: async () => {
     // Copy the CSS file to dist so consumers can import it
     copyFileSync('src/styles.css', 'dist/styles.css');
